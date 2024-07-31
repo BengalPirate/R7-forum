@@ -3,36 +3,102 @@ Questions for Lesson 6
 1. When you enable CRUD operations on a table in the database, you need to add four things
 to your Rails application.  When you generate a scaffold, all four are created.What are they?
 
-
+Model, Controller, Views, and Routes
 
 
 2. When you specify a route in config/routes.rb, you need to include certain information.  What
 must be included? In addition, you may specify an additional parameter to create a variable
 that describes the route.  How do you do that? What variable is created?
-
+HTTP Verb (GET, POST, PATCH, PUT, DELETE), URL Pattern, Controller and Action. 
+To create a variable in teh route, one would use a colon (':') frollowed by the variable name. This 
+variable is then accessible in the controller action via the 'params' hash. To creat a varuable describing 
+the route, we use a dynamic segment in the URL pattern. 
 
 
 3. What does the Rails db:migrate command do?
-
+It Runs Database Migrations, Updates Schema Version, Modifies Database Schema and Generates/Updates Schema Files
 
 
 4. What file do you look at to see the current database schema?
-
+db/schema.rb
 
 5. What command shows the routes?
-
+bin/rails routes 
 
 6. How can you start the Rails console? How can you do CRUD operations from the console?
+bin/rails console
 
+
+To start the Rails console, you use the following command:
+
+sh
+Copy code
+rails console
+This will open an interactive Ruby session within the context of your Rails application, allowing you to interact with your application’s models and perform CRUD (Create, Read, Update, Delete) operations directly from the console.
+
+Here’s how you can perform CRUD operations from the Rails console:
+
+Create
+To create a new record in the database, you can instantiate a new model object and save it
+# Create a new user
+user = User.new(name: "John Doe", skill_level: "Intermediate")
+user.save
+
+# Or using the create method which combines new and save
+user = User.create(name: "Jane Doe", skill_level: "Expert")
+
+Read
+To read or retrieve records from the database, you can use methods like all, find, find_by, or where:
+# Retrieve all users
+users = User.all
+
+# Find a user by ID
+user = User.find(1)
+
+# Find a user by attribute
+user = User.find_by(name: "John Doe")
+
+# Find users matching certain conditions
+users = User.where(skill_level: "Intermediate")
+
+Update
+To update an existing record, find the record first, modify its attributes, and save the changes:
+# Find a user and update their attributes
+user = User.find(1)
+user.name = "John Smith"
+user.save
+
+# Or using the update method
+user.update(name: "John Smith", skill_level: "Advanced")
+
+Delete
+To delete a record, find the record and call the destroy method:
+# Find a user and delete them
+user = User.find(1)
+user.destroy
 
 7. What statements are in erb files that make them different from html files?  What are the
 two kinds of special statements, and how are they marked in the erb file? Where are they executed?
+
+Output Tags <%=...%> 
+Script Tags <% ... %>
+
+The Ruby code within theses ERB tags is executed ont he server. When a request is made to a Rails application
+the server processes the ERB files, executes any embedded Ruby code, and generates the final HTML output.
+THis HTML is then sent the the client's browser.
 
 
 8. Consider this statement: @forum = Forum.new().  Why is Forum capitalized?  Why is @forum not
 capitalized? Why is the @ used?
 
+Forum is a class name in Ruby. By convention, class names in Ruby are capitalized and follow CamelCase naming.
 
+@forum is an instance variable in Ruby. Instance variables are prefixed with @ and are used to store data that is accessible within the scope of an instance of a class.
+In the context of a Rails controller, @forum is used to hold the newly created instance of the Forum model so that it can be accessed in the corresponding view.
+Instance variables are not capitalized by convention, which helps to distinguish them from class names.
+
+The @ symbol denotes an instance variable. In a Rails controller, instance variables are used to pass data from the controller to the view.
+When you create an instance variable like @forum in a controller action, Rails makes it available to the view associated with that action.
 
 9. Consider these statements:
 
@@ -42,6 +108,12 @@ capitalized? Why is the @ used?
 
 What is the difference between Forum.new() and Forum.create()?  Why can't you do Forum.save(...)?
 
+Forum.new(...) Initializes a new instance of the Forum class but does not save it to the database.
+
+Forum.create(...) Initializes a new instance of the Forum class and saves it to the database in one step.
+
+The save method is an instance method, not a class method. This means it must be called on an instance 
+of the class (@forum.save), not on the class itself (Forum.save).
 
 10. In the forums controller, you have a method called show:
 
@@ -56,6 +128,13 @@ is a hash called params that is passed to that method.  And, in this case, the p
 hash has a value, params[:id].  What is the value for this element of the hash? How
 did it get there?
 
+The show action knows which forum to show based on the params[:id] value. This value is 
+provided by the route that points to the show action. The params hash contains all the parameters 
+passed to the controller action, including those from the URL, query string, and form data. In the 
+case of the show action, params[:id] contains the ID of the forum to be displayed.
 
+The value of params[:id] comes from the route definition in config/routes.rb. When you use RESTful 
+routes with resources :forums, Rails automatically generates a set of standard routes for the forums 
+resource, including the show route.
 
 
